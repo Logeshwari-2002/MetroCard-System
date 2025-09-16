@@ -17,7 +17,7 @@ public class CheckInService {
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
 
-            // ✅ Find last journey for discount check
+            
             PreparedStatement lastJourney = conn.prepareStatement(
                     "SELECT station FROM journey WHERE card_number = ? ORDER BY journey_time DESC LIMIT 1"
             );
@@ -33,7 +33,7 @@ public class CheckInService {
                 }
             }
 
-            // ✅ Get balance
+          
             PreparedStatement getBalance = conn.prepareStatement(
                     "SELECT balance FROM metrocard WHERE card_number = ?"
             );
@@ -44,7 +44,7 @@ public class CheckInService {
                 double currentBalance = rs.getDouble("balance");
 
                 if (currentBalance >= finalCharge) {
-                    // Deduct balance
+                    
                     PreparedStatement update = conn.prepareStatement(
                             "UPDATE metrocard SET balance = balance - ? WHERE card_number = ?"
                     );
@@ -52,7 +52,7 @@ public class CheckInService {
                     update.setString(2, cardNumber);
                     update.executeUpdate();
 
-                    // Record journey
+                   
                     PreparedStatement insertJourney = conn.prepareStatement(
                             "INSERT INTO journey (card_number, passenger_type, station, charge) VALUES (?, ?, ?, ?)"
                     );
